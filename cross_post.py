@@ -1,9 +1,10 @@
 import json
 import os
 import time
-from beemblurt import Blurt
+from beem import Blurt
 import requests
 
+# কনফিগারেশন
 HIVE_USERNAME = os.getenv("HIVE_USERNAME", "aburihan1")
 BLURT_USERNAME = os.getenv("BLURT_USERNAME", "aburihan1")
 BLURT_POSTING_KEY = os.getenv("BLURT_POSTING_KEY")
