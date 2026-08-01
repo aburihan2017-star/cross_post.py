@@ -2,7 +2,7 @@ name: Auto Post Hive to Blurt Community
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # প্রতি ৬ ঘণ্টা পর পর অটো চেক করে পোস্ট করবে
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:
