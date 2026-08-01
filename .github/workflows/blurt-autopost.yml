@@ -1,0 +1,32 @@
+name: Auto Post Hive to Blurt Community
+
+on:
+  schedule:
+    - cron: '0 */6 * * *' # প্রতি ৬ ঘণ্টা পর পর অটো চেক করে পোস্ট করবে
+  workflow_dispatch:
+
+jobs:
+  crosspost:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beem-blurt
+
+      - name: Run Auto Cross-Post Script
+        env:
+          HIVE_USERNAME: 'aburihan1'
+          BLURT_USERNAME: 'aburihan1'
+          BLURT_POSTING_KEY: ${{ secrets.BLURT_POSTING_KEY }}
+        run: |
+          python cross_post.py
