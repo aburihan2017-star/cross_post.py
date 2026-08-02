@@ -135,7 +135,7 @@ def process_and_post_unshared():
     blurt = Blurt(node=blurt_nodes, keys=[BLURT_POSTING_KEY])
 
     posted_count = 0
-    MAX_POSTS_PER_RUN = 3  # ব্লকচেইন লিমিট এড়াতে প্রতিবার সর্বোচ্চ ৩ টি নতুন পোস্ট শেয়ার করবে
+    MAX_POSTS_PER_RUN = 1  # ব্লকচেইন লিমিট এড়াতে প্রতিবার সর্বোচ্চ ৩ টি নতুন পোস্ট শেয়ার করবে
 
     for hive_post in posts:
         title = hive_post.get("title")
