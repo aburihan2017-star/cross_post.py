@@ -2,7 +2,7 @@ name: Auto Post Hive to Blurt Community
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 12 * * *'  # প্রতিদিন বাংলাদেশ সময় সন্ধ্যা ৬:০০ টায় ১ বার রান হবে
   workflow_dispatch:
 
 jobs:
