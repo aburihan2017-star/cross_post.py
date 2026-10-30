@@ -12,7 +12,7 @@ BLURT_USERNAME = os.getenv("BLURT_USERNAME", "aburihan1")
 BLURT_POSTING_KEY = os.getenv("BLURT_POSTING_KEY")
 
 COMMUNITY_TAG = "blurt-1787181"
-DAYS_AGO = 60  # ৬০ দিন আগের সময়সীমা
+DAYS_AGO = 365  # ১ বছর (৩৬৫ দিন) আগের সময়সীমা
 
 # Blurt-এর সচল ও সক্রিয় RPC নোডসমূহ
 BLURT_NODES = [
@@ -23,12 +23,12 @@ BLURT_NODES = [
 ]
 
 
-def get_hive_posts_from_60_days_ago(username, days=60):
-    """৬০ দিন আগের সময় থেকে আজকের দিকে আসা পোস্টসমূহ সংগ্রহ করা"""
+def get_hive_posts(username, days=DAYS_AGO):
+    """নির্দিষ্ট দিন (যেমন ৩৬৫ দিন) আগের সময় থেকে আজকের দিকে আসা পোস্টসমূহ সংগ্রহ করা"""
     url = "https://api.hive.blog"
     cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
 
-    print(f"--- ৬০ দিন আগের ({cutoff_date.strftime('%Y-%m-%d')}) পর থেকে পোস্ট খোঁজা শুরু হচ্ছে... ---")
+    print(f"--- গত {days} দিন আগের ({cutoff_date.strftime('%Y-%m-%d')}) পর থেকে পোস্ট খোঁজা শুরু হচ্ছে... ---")
 
     all_posts = []
     start_author = None
@@ -68,7 +68,7 @@ def get_hive_posts_from_60_days_ago(username, days=60):
                 created_str = post.get("created")
                 created_dt = datetime.fromisoformat(created_str).replace(tzinfo=timezone.utc)
 
-                # যদি পোস্টটি ৬০ দিনের আগের পুরনো হয়, তবে ফেচিং বন্ধ করবে
+                # যদি পোস্টটি ১ বছরের আগের পুরোনো হয়, তবে ফেচিং বন্ধ করবে
                 if created_dt < cutoff_date:
                     stop_fetching = True
                     break
@@ -85,7 +85,7 @@ def get_hive_posts_from_60_days_ago(username, days=60):
             print(f"Hive Fetch Error: {e}")
             break
 
-    # ৬০ দিনের মধ্যের পোস্টগুলোকে পুরোনো থেকে নতুন ক্রমানুসারে সাজানো (Oldest to Newest)
+    # পোস্টগুলোকে পুরোনো থেকে নতুন ক্রমানুসারে সাজানো (Oldest to Newest)
     all_posts.sort(key=lambda x: x.get("created"))
     print(f"গত {days} দিনের সীমার মধ্যে মোট {len(all_posts)} টি পোস্ট পাওয়া গেছে।")
     return all_posts
@@ -173,11 +173,11 @@ def main():
         print("❌ Error: GitHub Secrets-এ 'BLURT_POSTING_KEY' খুঁজে পাওয়া যায়নি।")
         sys.exit(1)
 
-    # ১. ৬০ দিন আগের পোস্ট থেকে শুরু করে আজকের দিকে তালিকা সংগ্রহ করা
-    posts = get_hive_posts_from_60_days_ago(HIVE_USERNAME, days=DAYS_AGO)
+    # ১. ১ বছর (৩৬৫ দিন) আগের পোস্ট থেকে শুরু করে তালিকা সংগ্রহ করা
+    posts = get_hive_posts(HIVE_USERNAME, days=DAYS_AGO)
 
     if not posts:
-        print("ℹ️ গত ৬০ দিনের মধ্যে শেয়ার করার মতো কোনো পোস্ট পাওয়া যায়নি।")
+        print(f"ℹ️ গত {DAYS_AGO} দিনের মধ্যে শেয়ার করার মতো কোনো পোস্ট পাওয়া যায়নি।")
         return
 
     # ২. পুরোনো পোস্ট থেকে একটি একটি করে চেক করা
@@ -200,7 +200,7 @@ def main():
             break  # দিনে মাত্র ১টি পোস্ট শেয়ার করে রান বন্ধ করবে
 
     if not posted:
-        print("\nℹ️ গত ৬০ দিনের সব পোস্টই ব্লার্টে ইতিমধ্যে পোস্ট করা আছে। নতুন কোনো পোস্ট শেয়ার করা হয়নি।")
+        print(f"\nℹ️ গত {DAYS_AGO} দিনের সব পোস্টই ব্লার্টে ইতিমধ্যে পোস্ট করা আছে। নতুন কোনো পোস্ট শেয়ার করা হয়নি।")
 
 
 if __name__ == "__main__":
